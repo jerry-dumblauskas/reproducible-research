@@ -1,22 +1,69 @@
 ---
-title: "First R Markdown"
+title: "Homework 1S"
 author: "Jerry"
 date: "February 16, 2016"
 output: html_document
 ---
 
-This is an sssR Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+This file covers homework 1 for reproducible research.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+##1 Code for reading in the dataset and/or processing the data
+read the data:  please note the activity.csv file is assumed to be in the same directory
 
 ```{r}
-summary(cars)
+qqq<-read.csv('activity.csv')
 ```
 
-You can also embed plots, for example:
+##2 Histogram of the total number of steps taken each day
+Histogram of steps per day
+```{r}
+temp_data_sum<-aggregate(steps ~ date, qqq, sum)
+hist(temp_data_sum$steps)
 
-```{r, echo=FALSE}
-plot(cars)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+##3 Mean and median number of steps taken each day
+Mean and median of steps per day
+```{r}
+my_mean<-mean(temp_data_sum$steps)
+my_median<-median(temp_data_sum$steps)
+print (my_mean)
+print(my_median)
+```
+
+##4 Time series plot of the average number of steps taken
+Time Series Plot
+
+````{r}
+```
+
+##5 The 5-minute interval that, on average, contains the maximum number of steps
+Time Series Plot
+
+````{r}
+```
+
+##6 Code to describe and show a strategy for imputing missing data
+tbd
+
+````{r}
+```
+
+##7 Histogram of the total number of steps taken each day after missing values are imputed
+tbd
+
+````{r}
+```
+
+##8 Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+tbd
+
+````{r}
+```
+
+##9
+tbd
+
+````{r}
+```
+
