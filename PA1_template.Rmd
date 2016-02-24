@@ -13,61 +13,113 @@ output:
 read the data:  please note the activity.csv file is assumed to be in the same directory
 
 ```{r}
-qqq<-read.csv('activity.csv')
+qqq<-read.csv('activity.csv', stringsAsFactors=F,  colClasses = c("numeric","Date","numeric"))
 ```
-
 
 # What is mean total number of steps taken per day?
 ##2 Histogram of the total number of steps taken each day
 Histogram of steps per day, using the aggregate function (step~day and summed)
 ```{r}
-temp_data_sum<-aggregate(steps ~ date, qqq, sum)
-hist(temp_data_sum$steps)
-
+temp_data_sum<-aggregate(qqq$steps,list(date=qqq$date), sum, na.rm = TRUE )
+hist(temp_data_sum$x, xlab = "steps", ylab = "days", main="Total Steps per Day")
 ```
 
 ##3 Mean and median number of steps taken each day
 Mean and median of steps per day
 ```{r}
-my_mean<-mean(temp_data_sum$steps)
-my_median<-median(temp_data_sum$steps)
+my_mean<-mean(temp_data_sum$x)
+my_median<-median(temp_data_sum$x)
 print (my_mean)
 print(my_median)
 ```
-
 
 # What is the average daily activity pattern?
 ##4 Time series plot of the average number of steps taken
 Time Series Plot with a mean
 
 ````{r}
-temp_data_mean<-aggregate(steps ~ date, qqq, sum)
-plot(temp_data_mean)
+temp_data_mean<-aggregate(steps ~ date, qqq, mean, na.rm=TRUE)
+plot(temp_data_mean, type = 'l', xlab = "date", ylab = "steps")
 ```
 
 ##5 The 5-minute interval that, on average, contains the maximum number of steps
-Time Series Plot
+Time Series Plot, using ggplot and taking the *AVERAGE*
 
 ````{r}
-aggdata <-aggregate(qqq$steps, by=list(qqq$interval), FUN=sum, na.rm=TRUE)
+aggdata <-aggregate(qqq$steps, by=list(qqq$interval), FUN=mean, na.rm=TRUE)
+library(ggplot2)
+ggplot(data=aggdata, aes(x=Group.1, y=x)) +
+      geom_line() +
+      xlab("5 minute interval") +
+      ylab("Average number of steps taken")
+```
+The max 5 minute interval
+````{r}
+w<-aggdata[which.max(aggdata$x),1]
 ```
 
+The interval is `r w `
 
 # Imputing missing values
 ##6 Code to describe and show a strategy for imputing missing data
-tbd
+Many missing intervals
+````{r}
+nodata <- is.na(qqq$steps)
+table(nodata)
+```
+This gives `r table(nodata)[2]` steps missing!
+
+A good first approximation here is to try getting the mean of each interval.
+We already have this(aggdata), so the mean of each interval will replace the intervals that are NA
 
 ````{r}
+get_avg <- function(steps, interval)
+{
+  if (is.na(steps)) 
+  {
+  subset(aggdata, Group.1 == interval, select = c(x))[1,]
+  } else {
+    steps
+  }
+}
+
+aaa<-cbind(qqq,new_steps = mapply(get_avg, qqq$steps, qqq$interval) )
 ```
-##7 Histogram of the total number of steps taken each day after missing values are imputed
-tbd
+
+##7 Histogram of the total number of steps taken each day after missing values are imputed, along with the new
 
 ````{r}
+temp_data_sum<-aggregate(new_steps ~ date, aaa, sum)
+hist(temp_data_sum$new_steps)
+my_mean<-mean(temp_data_sum$new_steps)
+my_median<-median(temp_data_sum$new_steps)
+print (my_mean)
+print(my_median)
 ```
+
+The above shows this method seems to increase the amplitute of the midrange of the steps.  Mean goes up.  This makes sense as there is just more data.  Median goes down, but more gradually (Not really sure why this is)...
 
 # Are there differences in activity patterns between weekdays and weekends?
+
 ##8 Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
-tbd
+
 
 ````{r}
+weekday.or.weekend <- function(date) {
+    day <- weekdays(date)
+    if (day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))
+        return("weekday")
+    else if (day %in% c("Saturday", "Sunday"))
+        return("weekend")
+    else
+        stop("invalid date")
+}
+aaa$date <- as.Date(aaa$date)
+aaa$day <- sapply(aaa$date, FUN=weekday.or.weekend)
+
+temp_data_mean <- aggregate(steps ~ interval + day, data=aaa, mean)
+ggplot(temp_data_mean, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) +
+    xlab("5-minute interval") + ylab("Number of steps")
 ```
+
+During the week we see a big spike at the start of the day (after sleep I presume), followed by "sitting at the desk".  On the weekend there is more frequent movement.
