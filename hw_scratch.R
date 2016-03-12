@@ -4,3 +4,4 @@ zz<-subset(x,select=y)
 unique(zz$PROPDMGEXP)
 zz[zz$PROPDMGEXP=='-',]
 unique(zz$CROPDMGEXP)
+

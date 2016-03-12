@@ -1,0 +1,28 @@
+---
+title: "Storm Data Analysis with respect to human and economic health"
+author: "Jerry Dumblauskas"
+date: "March 11, 2016"
+output: html_document
+---
+
+#Synopsis 
+We are going to analyze storm data from the U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database.  We want to ask 2 questions: 1) What storm events have the most harmful effects on human health, and 2) Across the United States, which types of events have the greatest economic consequences?
+
+For this analysis, we are going to define human health as a combinations of injuries and fatalities (but won't give weight to one or the other).  We will also combine property and crop damage and aggregate the effects, in dollar terms, to show a summarized pictue
+
+#Data processing
+Let's load the data.  We will assume that the data file (which can be found on the NOAA's website), has already been downloaded and is in the same directory as this document
+
+```{r loaddata, cache=TRUE}
+dta<-read.csv("repdata-data-StormData.csv.bz2")
+
+```
+
+Now, this is a huge dataset and we want to work with a smaller set.  We will just pull the variables we need
+```{r, cache=TRUE}
+y<-c('EVTYPE','FATALITIES', 'INJURIES', 'PROPDMG', 'PROPDMGEXP', 'CROPDMG', 'CROPDMGEXP')
+zz<-subset(dta,select=y)
+```
+
+#Results
+

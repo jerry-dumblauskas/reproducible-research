@@ -3,3 +3,5 @@
 *csv
 *.bz2
 *.pdf
+junk*
+rsconnect
