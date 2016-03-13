@@ -78,7 +78,7 @@ barplot(plot_data_hl$totals, ylim=c(0, 100), names.arg=plot_data_hl$Group.1, las
 
 ###Econonic Consequences
 
-We can plot the data, we again will get the top 20 economic events (in Billions of Dollars), after we aggregate and sort
+We can plot the data, we again will get the top 20 economic events (in Billions of Dollars), after we aggregate and sort.
 ```{r plot_econ_data, cache=TRUE}
 # upper this
 economic_damage$EVTYPE<-toupper(economic_damage$EVTYPE)
