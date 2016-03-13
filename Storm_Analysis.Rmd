@@ -22,7 +22,6 @@ Now, this is a huge dataset and we want to work with a smaller set.  We will jus
 ```{r process_and_condense_data, cache=TRUE}
 danger_to_human_life<-subset(dta,select = c('EVTYPE', 'FATALITIES', 'INJURIES'))
 
-
 economic_damage<-subset(dta,select = c('EVTYPE', 'PROPDMG', 'PROPDMGEXP', 'CROPDMG', 'CROPDMGEXP'))
 
 unique(dta$PROPDMGEXP)
