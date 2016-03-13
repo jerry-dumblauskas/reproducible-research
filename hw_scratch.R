@@ -6,12 +6,14 @@ dta<-read.csv("repdata-data-StormData.csv.bz2")
 
 
 danger_to_human_life<-subset(dta,select = c('EVTYPE', 'FATALITIES', 'INJURIES'))
+# upper this
+danger_to_human_life$EVTYPE<-toupper(danger_to_human_life$EVTYPE)
 aggdata_hl<-aggregate(danger_to_human_life[,2:3], by=list(danger_to_human_life$EVTYPE), FUN = sum, na.rm=TRUE)
 aggdata_hl$totals<-rowSums(aggdata_hl[,2:3])
 sorted_hl<-aggdata_hl[order(-aggdata_hl$totals), ]
 plot_data_hl<-head(sorted_hl,20)
 plot_data_hl$totals<-plot_data_hl$totals/1000
-barplot(plot_data_hl$totals, names.arg=plot_data_hl$Group.1, ylim=c(0, 100),las=2, ylab = "Number of incidents (in Thousands)", main = "Highest 20 events that have the most harmful effects on human life ")
+barplot(plot_data_hl$totals, names.arg=plot_data_hl$Group.1, cex.names = .5, ylim=c(0, 100),las=2, ylab = "Number of incidents (in Thousands)", main = "Highest 20 events that have the most harmful effects on human life ")
 
 
 economic_damage<-subset(dta,select = c('EVTYPE', 'PROPDMG', 'PROPDMGEXP', 'CROPDMG', 'CROPDMGEXP'))

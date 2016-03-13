@@ -18,13 +18,15 @@ dta<-read.csv("repdata-data-StormData.csv.bz2")
 
 ```
 
-Now, this is a huge dataset and we want to work with a smaller set.  We will just pull the variables we need.  We also for economic consequences need to fix and adjust the 'exponents' field, as it is in a non standard format. Here, we have to mutate the data to account for the 'exp' column of the data.  As best as can be figured, numbers like 2, mean 'multiply the previous column by 10`.  Items like 'b' and 'B' mean 'Billions'.  We need to do this for both property damage and crop damage
+Now, this is a huge dataset and we want to work with a smaller set.  We will just pull the variables we need.  Also, for economic consequences, we need to fix and adjust the 'exponents' field, as it is in a non standard format. Here, we have to mutate the data to account for the 'exp' column of the data.  As best as can be figured, numbers like 2, mean 'multiply the previous column by 10`.  Items like 'b' and 'B' mean 'Billions'.  So, we will create a new column and put the real numbers into this column.  We need to do this for both property damage and crop damage
 ```{r process_and_condense_data, cache=TRUE}
 danger_to_human_life<-subset(dta,select = c('EVTYPE', 'FATALITIES', 'INJURIES'))
 
 economic_damage<-subset(dta,select = c('EVTYPE', 'PROPDMG', 'PROPDMGEXP', 'CROPDMG', 'CROPDMGEXP'))
 
+# view of the valid values
 unique(dta$PROPDMGEXP)
+# view of the valid values
 unique(dta$CROPDMGEXP)
 
 economic_damage$PROPDMGNUM[economic_damage$PROPDMGEXP=='']<-1
@@ -66,20 +68,22 @@ economic_damage$CROPDMGTOTAL<-economic_damage$CROPDMGNUM * economic_damage$CROPD
 ###Effects on Human life
 First, lets handle the highest events that harmful effects on human life.  We will highlight the top 20.  So, let's aggegrate, sort, then plot the data.
 ```{r plotlife, cache=TRUE}
+# upper this, as during investigation I found the same word (like storm and STORM) that was not case sensitive
+danger_to_human_life$EVTYPE<-toupper(danger_to_human_life$EVTYPE)
 aggdata_hl<-aggregate(danger_to_human_life[,2:3], by=list(danger_to_human_life$EVTYPE), FUN = sum, na.rm=TRUE)
 aggdata_hl$totals<-rowSums(aggdata_hl[,2:3])
 sorted_hl<-aggdata_hl[order(-aggdata_hl$totals), ]
 plot_data_hl<-head(sorted_hl,20)
 plot_data_hl$totals<-plot_data_hl$totals/1000
-barplot(plot_data_hl$totals, ylim=c(0, 100), names.arg=plot_data_hl$Group.1, las=2, ylab = "Number of incidents (in Thousands)", main = "Highest 20 events that have the most harmful effects on human life ")
+barplot(plot_data_hl$totals, ylim=c(0, 100), cex.names = .5, names.arg=plot_data_hl$Group.1, las=2, ylab = "Number of incidents (in Thousands)", main = "Highest 20 events that have the most harmful effects on human life ")
 
 ```
 
-###Econonic Consequences
+###Economic Consequences
 
 We can plot the data, we again will get the top 20 economic events (in Billions of Dollars), after we aggregate and sort.
 ```{r plot_econ_data, cache=TRUE}
-# upper this
+# upper this, as during investigation I found the same word that was not case sensitive
 economic_damage$EVTYPE<-toupper(economic_damage$EVTYPE)
 # sort and combine the data into a totals collumn
 aggdata_econ_consequences<-aggregate(economic_damage[,c(7,9)], by=list(economic_damage$EVTYPE), FUN = sum, na.rm=TRUE)
@@ -88,7 +92,7 @@ sorted_ec<-aggdata_econ_consequences[order(-aggdata_econ_consequences$totals), ]
 #set to billions
 sorted_ec$totals<-sorted_ec$totals/1000000000
 plot_data_ec<-head(sorted_ec,20)
-barplot(plot_data_ec$totals, ylim=c(0, 200), names.arg=plot_data_ec$Group.1, las=2, ylab = "Dollar Damage (in Billions of Dollars)", main = "Highest 20 events that have the most harmful effects on the economy ")
+barplot(plot_data_ec$totals, ylim=c(0, 200), cex.names = .5, names.arg=plot_data_ec$Group.1, las=2, ylab = "Dollar Damage (in Billions of Dollars)", main = "Highest 20 events that have the most harmful effects on the economy ")
 
 ```
 
