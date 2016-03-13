@@ -2,7 +2,7 @@ dta<-read.csv("repdata-data-StormData.csv.bz2")
   #y<-c('EVTYPE','FATALITIES', 'INJURIES', 'PROPDMG', 'PROPDMGEXP', 'CROPDMG', 'CROPDMGEXP')
   #unique(dta$PROPDMGEXP)
   #dta[dta$PROPDMGEXP=='-',]
-  #unique(zz$CROPDMGEXP)
+
 
 
 danger_to_human_life<-subset(dta,select = c('EVTYPE', 'FATALITIES', 'INJURIES'))
