@@ -1,7 +1,7 @@
 dta<-read.csv("repdata-data-StormData.csv.bz2")
-  #y<-c('EVTYPE','FATALITIES', 'INJURIES', 'PROPDMG', 'PROPDMGEXP', 'CROPDMG', 'CROPDMGEXP')
-  #unique(dta$PROPDMGEXP)
-  #dta[dta$PROPDMGEXP=='-',]
+#y<-c('EVTYPE','FATALITIES', 'INJURIES', 'PROPDMG', 'PROPDMGEXP', 'CROPDMG', 'CROPDMGEXP')
+#unique(dta$PROPDMGEXP)
+#dta[dta$PROPDMGEXP=='-',]
 
 
 
